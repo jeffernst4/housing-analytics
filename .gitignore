@@ -3,3 +3,5 @@
 *.pkl
 *.pb
 /Model
+/Chromedriver
+model/

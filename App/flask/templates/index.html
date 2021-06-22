@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+
+<h1>San Diego Neighborhood Identifier</h1>
+
+<p>
+    Type in a San Diego address to identify the neighborhood. This application uses a neural network based on Redfin data to identify the approximate neighborhood of any address within San Diego.
+</p>
+
+<div class="content">
+
+    <form action="/result" method = "POST">
+        <p>Address<input type = "text" name = "address" /></p>
+        <p>City<input type = "text" name = "city" /></p>
+        <p>State<input type = "text" name = "state" /></p>
+        <p>Zip Code<input type = "text" name = "zipcode" /></p>
+        <p><input type = "submit" value = "submit" /></p>
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+Resources
+https://www.quora.com/Why-can-t-I-run-Python-in-CMD-but-can-in-Anaconda-Prompt
+https://www.youtube.com/watch?v=iBeOvmt-tR0&ab_channel=MathisVanEetvelde
+https://towardsdatascience.com/deploy-neural-network-with-flask-docker-and-aws-beanstalk-6fd34373497a
+https://towardsdatascience.com/machine-learning-in-production-keras-flask-docker-and-heroku-933b5f885459
+https://towardsdatascience.com/deploying-deep-learning-models-using-tensorflow-serving-with-docker-and-flask-3b9a76ffbbda
+https://www.youtube.com/watch?v=zs3tyVgiBQQ&ab_channel=BeABetterDevBeABetterDev
+https://www.youtube.com/watch?v=GVs26OxzE3o&ab_channel=ParisNakitaKejserParisNakitaKejser
+https://gist.github.com/awssimplified/da49577fa48128e1da992dd6ec21085c
+https://www.youtube.com/watch?v=4oCjtzxWWJs&ab_channel=JustmeandOpensourceJustmeandOpensource
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/docker.html
+
+https://discuss.streamlit.io/t/howto-streamlit-on-aws-with-elastic-beanstalk-and-docker/10353
+
+
+To Do
+ - get better file editor
+
+Questions
+ - how to get requirements of application
+ - how to delete application from elastic beanstalk
+ - how to use python and elastic beanstalk outside of anaconda powershell prompt
+
+test on local eb
+set up docker file
+create flask app files
+
+Open cmd prompt
+go to file directory
+conda activate base
+initiate app - eb init
+test locally eb local run --port 5000
+http://localhost:5000/
+
+Virtual Environment
+python -m virtualenv env
+.\env\Scripts\activate
