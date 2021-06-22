@@ -1,0 +1,55 @@
+
+# --- Steps --- #
+ - Scraped region id's for each region
+ - Scraped data for each region on Redfin
+ - Cleaned region id's by examining states, min/max lat/lon
+ - Plotted neighborhood data in Tableau to check overlapping neighborhoods
+ - Renamed, deleted and modified regions to work best with model
+ - Started modeling with very low accuracy
+ - Created transformations on sample data to increase accuracy
+ - Examined neighborhoods with lowest accuracy to do final clean up
+ - Created a final model with sparse categorical cross entropy (96-97% accuracy, most mismatches were very close/easily confused neighborhoods)
+ - Downloaded sample San Diego data and predicted neighborhoods
+
+
+# --- Resources --- #
+ - https://www.redfin.com/neighborhood/350452/CA/San-Diego/Mission-Valley/housing-market
+ - https://www.greatschools.org/api/
+ - http://crimestats.arjis.org/
+ - https://censusreporter.org/profiles/14000US06073009304-census-tract-9304-san-diego-ca/
+
+
+# --- Analysis --- #
+ - Crime rate change over the past 3 years
+ - Median home value change over the past 3 years
+ - Median days on market change over the past 3 years
+ - Median sale over list price change over the past 3 years
+ - Price/sq ft per year per zip code
+ - Trend of price change
+ - Average year built per zip code
+ - Average square feet
+ - Median lot size
+
+
+# --- Current --- #
+ - Housing price metrics
+ - Housing demand metrics
+ - Public schools nearby ranking
+ - Compete score
+ - Transportation scores
+ - Crime rating
+ - Socioeconomics
+
+ 
+# --- Trending --- #
+ - Housing price metrics
+ - Housing demand metrics
+ - Crime rating
+ - Zillow 1 year forecast
+ 
+
+# --- Notes --- #
+ - Add latitude and longitude to neighborhoods by taking average lat and long for each neighborhood
+ - Scrape schools and use addresses to convert to coordinates
+ - Fix scraping to account for duplicate neighborhoods
+ 
