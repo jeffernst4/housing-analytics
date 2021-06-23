@@ -19,8 +19,8 @@ def load_ml_model():
 
     # Load model and assets
     model['model'] = keras.models.load_model('model')
-    model['scaler'] = pickle.load(open('model/scaler.pkl', 'rb'))
-    model['encoder'] = pickle.load(open('model/encoder.pkl', 'rb'))
+    model['scaler'] = pickle.load(open('model/assets/scaler.pkl', 'rb'))
+    model['encoder'] = pickle.load(open('model/assets/encoder.pkl', 'rb'))
 
     # Return model
     return(model)
