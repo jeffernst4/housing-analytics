@@ -51,5 +51,5 @@
 # --- Notes --- #
  - Add latitude and longitude to neighborhoods by taking average lat and long for each neighborhood
  - Scrape schools and use addresses to convert to coordinates
- - Fix scraping to account for duplicate neighborhoods
+ - Fix scraping to account for duplicate neighborhoods (use drop duplicates)
  

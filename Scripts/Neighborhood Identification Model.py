@@ -16,7 +16,7 @@ from tensorflow.keras.layers import Dense
 def LoadData(dataType):
     
     # Specifify input folder
-    inputDirectory = 'Data/Model Data - ' + dataType
+    inputDirectory = 'data/Model Data - ' + dataType
 
     # List files in directory
     fileNames = os.listdir(inputDirectory)
@@ -54,11 +54,11 @@ def LoadData(dataType):
 # --- Data --- #
 
 # Load data
-neighborhoods = pd.read_csv('Data/San Diego Neighborhoods.csv')
+neighborhoods = pd.read_csv('data/san diego neighborhoods.csv')
 
 # Load data
-trainData = LoadData('Train')
-testData = LoadData('Test')
+trainData = LoadData('train')
+testData = LoadData('test')
 
 
 # --- Neural Network --- #
@@ -98,17 +98,17 @@ model.add(Dense(len(set(trainLabels)), activation='softmax'))
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['sparse_categorical_accuracy'])
 
 # Run model
-model.fit(trainSamples, trainLabels, epochs=200, batch_size=100)
+model.fit(trainSamples, trainLabels, epochs=400, batch_size=100)
 
 # Evaluate model
 model.evaluate(trainSamples, trainLabels)
 model.evaluate(testSamples, testLabels)
 
 # Save the model
-model.save("Model")
+model.save("model")
 
 # Save the scalar
-dump(scaler, open('Model/Scaler.pkl', 'wb'))
+dump(scaler, open('model/assets/scaler.pkl', 'wb'))
 
 # Save the encoder
-dump(encoder, open('Model/Encoder.pkl', 'wb'))
+dump(encoder, open('model/assets/encoder.pkl', 'wb'))

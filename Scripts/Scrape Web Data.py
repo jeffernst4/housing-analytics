@@ -33,7 +33,7 @@ def InitiateDriver(downloadDirectory=''):
     chrome_options.add_experimental_option('prefs', {'download.default_directory' : r'C:\Users\Jeff\Documents\Housing Analytics' + downloadDirectory})
     
     # Initiate driver
-    driver = webdriver.Chrome(executable_path='Chromedriver/chromedriver.exe', options=chrome_options)
+    driver = webdriver.Chrome(executable_path='chromedriver/chromedriver.exe', options=chrome_options)
     
     # Return driver
     return(driver)
@@ -149,7 +149,7 @@ def DownloadRedfinHousingData(driver, downloadUrl, neighborhood, neighborhoodId,
 # --- Redfin Neighborhood Id Scraping --- #
 
 # Load neighborhoods
-neighborhoods = pd.read_csv('Data/San Diego Neighborhoods.csv')
+neighborhoods = pd.read_csv('data/san diego neighborhoods.csv')
 
 # Initiate driver
 driver = InitiateDriver()
@@ -188,16 +188,16 @@ for neighborhood in neighborhoods['Neighborhood_Name_Redfin']:
     neighborhoods.loc[(neighborhoods['Neighborhood'] == neighborhood), 'Neighborhood_Id_Redfin'] = neighborhoodId
 
 # Write neighborhoods to a csv
-neighborhoods.to_csv('San Diego Neighborhoods.csv', index=False)
+neighborhoods.to_csv('san diego neighborhoods.csv', index=False)
 
 
 # --- Train Data Scraping --- #
 
 # Load neighborhoods
-neighborhoods = pd.read_csv('Data/San Diego Neighborhoods.csv')
+neighborhoods = pd.read_csv('data/san diego neighborhoods.csv')
 
 # Set download directory
-downloadDirectory = ['Data', 'Model Data - Train']
+downloadDirectory = ['data', 'model data - train']
 
 # Load driver
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
@@ -218,7 +218,7 @@ for index, row in neighborhoods.iterrows():
 # --- Test Data Scraping --- #
 
 # Load neighborhoods
-neighborhoods = pd.read_csv('Data/San Diego Neighborhoods.csv')
+neighborhoods = pd.read_csv('data/san diego neighborhoods.csv')
 
 # Set download directory
 downloadDirectory = ['Data', 'Model Data - Test']
@@ -312,14 +312,14 @@ housingMetrics = housingMetrics.reset_index(drop=True)
 neighborhoodScores = neighborhoodScores.reset_index(drop=True)
 
 # Save data to pickle
-housingMetrics.to_pickle('Data/Redfin Market Insights/Housing Metrics.pkl')
-neighborhoodScores.to_pickle('Data/Redfin Market Insights/Neighborhood Scores.pkl')
+housingMetrics.to_pickle('data/redfin market insights/housing metrics.pkl')
+neighborhoodScores.to_pickle('data/redfin market insights/neighborhood scores.pkl')
 
 
 # --- 2 Bed Housing Scraping --- #
 
 # Set download directory
-downloadDirectory = ['Data', 'Redfin Housing Data', '2 Bed Housing']
+downloadDirectory = ['data', 'redfin housing data', '2 bed housing']
 
 # Load driver
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
@@ -337,7 +337,7 @@ for i in range(len(neighborhoods)):
 # --- 3 Bed Housing Scraping --- #
 
 # Set download directory
-downloadDirectory = ['Data', 'Redfin Housing Data', '3 Bed Housing']
+downloadDirectory = ['data', 'redfin housing data', '3 bed housing']
 
 # Load driver
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
@@ -358,7 +358,7 @@ for i in range(len(neighborhoods)):
 driver = InitiateDriver('')
 
 # Load crime data stats page
-driver.get('http://crimestats.arjis.org/')
+driver.get('http://crime_stats.arjis.org/')
 
 # Pause
 Pause.Large()
@@ -391,7 +391,7 @@ Pause.Small()
 dateOptions = [option.text for option in driver.find_elements_by_xpath('//*[@id="ddBeginDate"]/option')][2:]
 
 # Create empty data frame
-crimeStats = pd.DataFrame(columns = ['Neighborhood', 'Date', 'Crime', 'Count'])
+crime_stats = pd.DataFrame(columns = ['Neighborhood', 'Date', 'Crime', 'Count'])
 
 for dateOption in dateOptions:
     
@@ -431,7 +431,7 @@ for dateOption in dateOptions:
     try:
         
         # Read html table
-        crimeStatsTable = pd.read_html(driver.find_element_by_xpath('//*[@id="G_UltraWebTab1xctl00xWebDataGrid1"]').get_attribute('outerHTML'))[0]
+        crime_stats_table = pd.read_html(driver.find_element_by_xpath('//*[@id="G_UltraWebTab1xctl00xWebDataGrid1"]').get_attribute('outerHTML'))[0]
         
     except:
         
@@ -439,17 +439,19 @@ for dateOption in dateOptions:
         continue
     
     # Convert crime stats to a long version
-    crimeStatsTable = crimeStatsTable.melt(id_vars='Crime', value_vars=crimeStatsTable.columns[1:])
+    crime_stats_table = crime_stats_table.melt(id_vars='Crime', value_vars=crime_stats_table.columns[1:])
     
     # Add date to data frame
-    crimeStatsTable['Date'] = dateOption
+    crime_stats_table['Date'] = dateOption
     
     # Rename columns
-    crimeStatsTable = crimeStatsTable.rename(columns={'variable': 'Neighborhood', 'value': 'Count'})
+    crime_stats_table = crime_stats_table.rename(columns={'variable': 'Neighborhood', 'value': 'Crime_Count'})
     
     # Append crime stats table to data frame
-    crimeStats = pd.concat([crimeStats, crimeStatsTable])
+    crime_stats = pd.concat([crime_stats, crime_stats_table])
 
+# Reset index of data frame
+crime_stats = crime_stats.reset_index(drop=True)
 
-
-
+# Save data to pickle
+crime_stats.to_pickle('data/crime data/crime stats.pkl')
