@@ -17,6 +17,8 @@
  - https://www.greatschools.org/api/
  - http://crimestats.arjis.org/
  - https://censusreporter.org/profiles/14000US06073009304-census-tract-9304-san-diego-ca/
+ - https://www.zillow.com/research/data/
+ - https://thecleverprogrammer.com/2020/11/12/earthquake-prediction-model-with-machine-learning/
 
 
 # --- Analysis --- #
