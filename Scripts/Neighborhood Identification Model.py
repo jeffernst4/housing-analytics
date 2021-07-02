@@ -91,14 +91,14 @@ testLabels = encoder.transform(testLabels)
 # Define the keras model
 model = Sequential()
 model.add(Dense(100, input_dim=2, activation='relu'))
-model.add(Dense(100, activation='relu'))
+model.add(Dense(200, activation='relu'))
 model.add(Dense(len(set(trainLabels)), activation='softmax'))
 
 # Compile model
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['sparse_categorical_accuracy'])
 
 # Run model
-model.fit(trainSamples, trainLabels, epochs=400, batch_size=100)
+model.fit(trainSamples, trainLabels, epochs=300, batch_size=100)
 
 # Evaluate model
 model.evaluate(trainSamples, trainLabels)
