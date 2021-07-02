@@ -38,7 +38,7 @@ def InitiateDriver(downloadDirectory=''):
     # Return driver
     return(driver)
 
-def ScrapeRedfinHousingMetrics(driver, neighborhood, housingMetrics, metricNames, chartName):
+def ScrapeRedfinhousing_metrics(driver, neighborhood, housing_metrics, metricNames, chartName):
     
     # Select 5 years button
     driver.find_element_by_xpath('//*[@id="' + chartName + '"]/div[1]/div[2]/button[3]',).click()
@@ -86,26 +86,26 @@ def ScrapeRedfinHousingMetrics(driver, neighborhood, housingMetrics, metricNames
             offsetValue += 9.4
         
         # Add values to housing metrics
-        housingMetrics = pd.concat([housingMetrics, pd.DataFrame({'Neighborhood':neighborhood, 'Metric_Name':metricName, 'Metric_Date':metricDates, 'Metric_Value':metricValues})])
+        housing_metrics = pd.concat([housing_metrics, pd.DataFrame({'Neighborhood':neighborhood, 'Date':metricDates, 'Metric_Name':metricName, 'Metric_Value':metricValues})])
     
     # Return housing metrics
-    return(housingMetrics)
+    return(housing_metrics)
 
-def ScrapeRedfinCompeteScores(driver, neighborhood, neighborhoodScores):
+def ScrapeRedfinCompeteScores(driver, neighborhood, neighborhood_scores):
     
     # Find compete score
     metricValues = driver.find_element_by_xpath('//*[@id="compete"]/div[1]/div[1]').text
     
     # Add values to neighborhood scores
-    neighborhoodScores = pd.concat([neighborhoodScores, pd.DataFrame({'Neighborhood':[neighborhood], 'Metric_Name':['Compete Score'], 'Metric_Value':[metricValues]})])
+    neighborhood_scores = pd.concat([neighborhood_scores, pd.DataFrame({'Neighborhood':[neighborhood], 'Metric_Name':['Compete Score'], 'Metric_Value':[metricValues]})])
     
     # Print neighborhood scraped
     print('Scraped compete score for ' + neighborhood)
     
     # Return neighborhood score
-    return(neighborhoodScores)
+    return(neighborhood_scores)
 
-def ScrapeRedfinTransportationScores(driver, neighborhood, neighborhoodScores):
+def ScrapeRedfinTransportationScores(driver, neighborhood, neighborhood_scores):
     
     # Click transportation section
     driver.find_element_by_xpath('//*[@id="null-collapsible"]/div[1]/div/div/div[1]/h2[contains(text(), "Transportation")]').click()
@@ -123,13 +123,13 @@ def ScrapeRedfinTransportationScores(driver, neighborhood, neighborhoodScores):
         scoreValues.append(driver.find_element_by_xpath('//*[@id="null-collapsible"]/div[2]/div/div/div[1]/div[@class="viz-container"]/div[' + str(i + 1) + ']/div[1]/div/span[1]').text)
     
     # Add values to neighborhood scores
-    neighborhoodScores = pd.concat([neighborhoodScores, pd.DataFrame({'Neighborhood':neighborhood, 'Score_Name':scoreNames, 'Score_Value':scoreValues})])
+    neighborhood_scores = pd.concat([neighborhood_scores, pd.DataFrame({'Neighborhood':neighborhood, 'Metric_Name':scoreNames, 'Metric_Value':scoreValues})])
     
     # Print neighborhood scraped
     print('Scraped transportation scores for ' + neighborhood)
     
     # Return neighborhood scores
-    return(neighborhoodScores)
+    return(neighborhood_scores)
 
 def DownloadRedfinHousingData(driver, downloadUrl, neighborhood, neighborhoodId, downloadDirectory):
     
@@ -203,7 +203,10 @@ downloadDirectory = ['data', 'model data - train']
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
 
 # Filter duplicates
-neighborhoods = neighborhoods[['Neighborhood', 'Neighborhood_Id_Redfin']].drop_duplicates()
+neighborhoods = neighborhoods[['Neighborhood', 'Neighborhood_Id_Redfin']].drop_duplicates().dropna()
+
+# Convert id to integer
+neighborhoods['Neighborhood_Id_Redfin'] = neighborhoods['Neighborhood_Id_Redfin'].astype(int)
 
 # Scrape train data
 for index, row in neighborhoods.iterrows():
@@ -227,7 +230,10 @@ downloadDirectory = ['Data', 'Model Data - Test']
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
 
 # Filter duplicates
-neighborhoods = neighborhoods[['Neighborhood', 'Neighborhood_Id_Redfin']].drop_duplicates()
+neighborhoods = neighborhoods[['Neighborhood', 'Neighborhood_Id_Redfin']].drop_duplicates().dropna()
+
+# Convert id to integer
+neighborhoods['Neighborhood_Id_Redfin'] = neighborhoods['Neighborhood_Id_Redfin'].astype(int)
 
 # Scrape train data
 for index, row in neighborhoods.iterrows():
@@ -241,21 +247,30 @@ for index, row in neighborhoods.iterrows():
 
 # --- Redfin Market Insights Scraping --- #
 
+# Load neighborhoods
+neighborhoods = pd.read_csv('data/san diego neighborhoods.csv')
+
 # Set download directory
 downloadDirectory = ['Data', 'Redfin Market Insights']
 
 # Load driver
 driver = InitiateDriver('\\' + '\\'.join(downloadDirectory) + '\\')
 
+# Filter duplicates
+neighborhoods = neighborhoods[['Neighborhood', 'Neighborhood_Id_Redfin']].drop_duplicates().dropna().reset_index()
+
+# Convert id to integer
+neighborhoods['Neighborhood_Id_Redfin'] = neighborhoods['Neighborhood_Id_Redfin'].astype(int)
+
 # Create empty data frames
-housingMetrics = pd.DataFrame(columns = ['Neighborhood', 'Metric_Name', 'Metric_Date', 'Metric_Value'])
-neighborhoodScores = pd.DataFrame(columns = ['Neighborhood', 'Metric_Name', 'Metric_Value'])
+housing_metrics = pd.DataFrame(columns = ['Neighborhood', 'Date', 'Metric_Name', 'Metric_Value'])
+neighborhood_scores = pd.DataFrame(columns = ['Neighborhood', 'Metric_Name', 'Metric_Value'])
 
 # Scrape market insights
-for i in range(len(neighborhoods)):
+for index, row in neighborhoods.iterrows():
     
     # Load market insights for neighborhood
-    driver.get('https://www.redfin.com/neighborhood/' + str(neighborhoods['Neighborhood_Id_Redfin'][i]) + '/CA/San-Diego/Mission-Valley/housing-market')
+    driver.get('https://www.redfin.com/neighborhood/' + str(row['Neighborhood_Id_Redfin']) + '/CA/San-Diego/Mission-Valley/housing-market')
     
     # Pause
     Pause.Large()
@@ -263,9 +278,9 @@ for i in range(len(neighborhoods)):
     try:
 
         # Scrape home prices metrics
-        housingMetrics = ScrapeRedfinHousingMetrics(driver,
-                                                    neighborhoods['Neighborhood_Label'][i],
-                                                    housingMetrics,
+        housing_metrics = ScrapeRedfinhousing_metrics(driver,
+                                                    row['Neighborhood'],
+                                                    housing_metrics,
                                                     ['Median Sale Price', '# of Homes Sold', 'Median Days on Market'],
                                                     'home_prices')
     except:
@@ -276,9 +291,9 @@ for i in range(len(neighborhoods)):
     try:
         
         # Scrape demand metrics
-        housingMetrics = ScrapeRedfinHousingMetrics(driver,
-                                                    neighborhoods['Neighborhood_Label'][i],
-                                                    housingMetrics,
+        housing_metrics = ScrapeRedfinhousing_metrics(driver,
+                                                    row['Neighborhood'],
+                                                    housing_metrics,
                                                     ['Sale-to-List Price', 'Homes Sold Above List Price', 'Homes with Price Drops'],
                                                     'demand')
     
@@ -290,7 +305,7 @@ for i in range(len(neighborhoods)):
     try:
         
         # Scrape compete scores
-        neighborhoodScores = ScrapeRedfinCompeteScores(driver, neighborhoods['Neighborhood_Label'][i], neighborhoodScores)
+        neighborhood_scores = ScrapeRedfinCompeteScores(driver, row['Neighborhood'], neighborhood_scores)
         
     except:
         
@@ -300,7 +315,7 @@ for i in range(len(neighborhoods)):
     try:
         
         # Scrape transportation scores
-        neighborhoodScores = ScrapeRedfinTransportationScores(driver, neighborhoods['Neighborhood_Label'][i], neighborhoodScores)
+        neighborhood_scores = ScrapeRedfinTransportationScores(driver, row['Neighborhood'], neighborhood_scores)
         
     except:
         
@@ -308,12 +323,12 @@ for i in range(len(neighborhoods)):
         pass
 
 # Reset index for data frames
-housingMetrics = housingMetrics.reset_index(drop=True)
-neighborhoodScores = neighborhoodScores.reset_index(drop=True)
+housing_metrics = housing_metrics.reset_index(drop=True)
+neighborhood_scores = neighborhood_scores.reset_index(drop=True)
 
 # Save data to pickle
-housingMetrics.to_pickle('data/redfin market insights/housing metrics.pkl')
-neighborhoodScores.to_pickle('data/redfin market insights/neighborhood scores.pkl')
+housing_metrics.to_pickle('data/redfin market insights/housing metrics.pkl')
+neighborhood_scores.to_pickle('data/redfin market insights/neighborhood scores.pkl')
 
 
 # --- 2 Bed Housing Scraping --- #
@@ -391,7 +406,7 @@ Pause.Small()
 dateOptions = [option.text for option in driver.find_elements_by_xpath('//*[@id="ddBeginDate"]/option')][2:]
 
 # Create empty data frame
-crime_stats = pd.DataFrame(columns = ['Neighborhood', 'Date', 'Crime', 'Count'])
+crime_stats = pd.DataFrame(columns = ['Neighborhood_Name_ARJIS', 'Date', 'Crime', 'Crime_Count'])
 
 for dateOption in dateOptions:
     
@@ -445,7 +460,7 @@ for dateOption in dateOptions:
     crime_stats_table['Date'] = dateOption
     
     # Rename columns
-    crime_stats_table = crime_stats_table.rename(columns={'variable': 'Neighborhood', 'value': 'Crime_Count'})
+    crime_stats_table = crime_stats_table.rename(columns={'variable': 'Neighborhood_Name_ARJIS', 'value': 'Crime_Count'})
     
     # Append crime stats table to data frame
     crime_stats = pd.concat([crime_stats, crime_stats_table])
