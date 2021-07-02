@@ -1,8 +1,10 @@
 
-# Load libraries
+# Load pages
 import pages.home
 import pages.locator
 import pages.analysis
+
+# Load libraries
 import streamlit as st
 
 st.set_page_config(
@@ -12,9 +14,9 @@ st.set_page_config(
  )
 
 pages = {
-    "Home": pages.home,
-    "Find an Address": pages.locator,
-    "Find a Neighborhood": pages.analysis
+    # "Explore Neighborhoods": pages.home,
+    "Analyze a Neighborhood": pages.locator
+    # "Compare Neighborhoods": pages.analysis
 }
 
 def main():
